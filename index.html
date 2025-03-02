@@ -1,12 +1,118 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>少女祈祷中……</title>
-	</head>
-	<body>
-		<p>少女祈祷中……</p>
-	</body>
-  <script type="text/javascript">window.location.href="https://www.tanxifei.top/";</script>
-</html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>少女祈祷中……</title>
+    <style>
+        :root {
+            --text-color: #333;
+            --bg-color: #f5fff7;
+            --img-border: rgba(100, 100, 100, 0.2);
+            --transition-time: 0.5s;
+        }
 
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-color: #c3f0ca;
+                --bg-color: #1a2a1f;
+                --img-border: rgba(200, 200, 200, 0.1);
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            transition: all var(--transition-time) ease;
+        }
+
+        .image-container {
+            width: min(80vw, 400px);
+            height: auto;
+            margin: 20px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--img-border);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: filter var(--transition-time) ease;
+        }
+
+        p {
+            font-size: clamp(1.8rem, 6vw, 3.2rem);
+            text-align: center;
+            margin: 1rem;
+            letter-spacing: 0.08em;
+            animation: textGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 8px transparent; }
+            50% { text-shadow: 0 0 12px currentColor; }
+        }
+
+        @media (max-width: 768px) {
+            .image-container {
+                width: 90vw;
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container">
+        <!-- 在此替换为实际图片URL -->
+        <img src="https://i0.hdslb.com/bfs/article/262759a06d95219ae6db2f393ec9915d384628005.gif" 
+             alt="纳西妲"
+             onerror="this.style.display='none'">
+    </div>
+    <p>少女祈祷中……</p>    
+    <p>正在尝试与Shirley Tanの网站集群进行通讯喵~</p>    
+
+    <script>
+        // 动态主题管理
+        const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        const updateTheme = (isDark) => {
+            document.documentElement.style.setProperty('--bg-color', 
+                isDark ? '#1a2a1f' : '#f5fff7');
+            document.documentElement.style.setProperty('--text-color', 
+                isDark ? '#c3f0ca' : '#2d5930');
+            
+            // 自动调整图片亮度
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.style.filter = isDark ? 'brightness(0.9)' : 'brightness(1.05)';
+            });
+        }
+
+        // 初始化主题
+        updateTheme(colorSchemeQuery.matches);
+        colorSchemeQuery.addEventListener('change', (e) => updateTheme(e.matches));
+
+        // 2秒后跳转
+        setTimeout(() => {
+            window.location.href = "https://www.tanxifei.top/";
+        }, 2000);
+    </script>
+</body>
+</html>
