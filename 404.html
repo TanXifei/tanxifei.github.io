@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X﹏X 迷路了喵~</title>
+    <title>好像迷路了喵(T＿T)</title>
     <style>
         :root {
             --text-color: #333;
@@ -80,13 +80,12 @@
 </head>
 <body>
     <div class="image-container">
-        <!-- 在此替换为实际图片URL -->
         <img src="https://i0.hdslb.com/bfs/article/2fd49e1a12fea94aed3e9fe8f476fc13384628005.jpg" 
              alt="纳西妲"
              onerror="this.style.display='none'">
     </div>
     <p>没找到你要的页面呢 也许是搬家了？</p>    
-    <p>正在尝试与Shirley Tanの网站集群进行通讯~</p>    
+    <p id="statusText">正在尝试与Shirley Tanの网站集群进行通讯~</p>
 
     <script>
         // 动态主题管理
@@ -109,9 +108,15 @@
         updateTheme(colorSchemeQuery.matches);
         colorSchemeQuery.addEventListener('change', (e) => updateTheme(e.matches));
 
+        // 文字状态切换
+        setTimeout(() => {
+            document.getElementById('statusText').textContent = "通讯成功!正在跳转到集群导航页";
+        }, 1500);
+
+        // 页面跳转
         setTimeout(() => {
             window.location.href = "https://www.tanxifei.top/";
-        }, 5000);
+        }, 3000);
     </script>
 </body>
-	</html>
+</html>
