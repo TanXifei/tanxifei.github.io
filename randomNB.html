@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线随机数生成器丨谭汐霏</title>
+    <style>
+        :root {
+            /* MD3 颜色系统 */
+            --md-sys-color-primary: #BD2817;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #BB583BB2;
+            --md-sys-color-surface: #FEF7FFB2;
+            --md-sys-color-surface-container: #DCCEB5CC;
+            --md-sys-color-on-surface: #1D1B20;
+            --md-ref-palette-primary40: #83C3CB;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --md-sys-color-primary: #BB583B;
+                --md-sys-color-on-primary: #FFFFFF;
+                --md-sys-color-primary-container: #BD2817B2;
+                --md-sys-color-surface: #1D1B20B2;
+                --md-sys-color-surface-container: #2D2A31CC;
+                --md-sys-color-on-surface: #E6E0E9;
+            }
+        }
+      
+        body {
+            font-family: 'Roboto', system-ui, sans-serif;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        
+            background-image: url('https://app.zichen.zone/api/acg/api.php');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .container {
+            background: var(--md-sys-color-surface-container);
+            padding: 32px;
+            border-radius: 28px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 480px;
+            margin: 32px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 模糊遮罩层 */
+        .blur-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .blur-overlay.active {
+            opacity: 1;
+        }
+
+        h1 {
+            font: 400 24px/32px 'Roboto';
+            color: var(--md-sys-color-primary);
+            margin: 0 0 32px 0;
+            text-align: center;
+        }
+
+        .input-group {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .input-field {
+            position: relative;
+            max-width: 100%;
+            z-index: 3;
+        }
+
+        input {
+            width: 100%;
+            height: 56px;
+            padding: 16px;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font: 400 16px/24px 'Roboto';
+            border-bottom: 2px solid var(--md-ref-palette-primary40);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom-color: var(--md-sys-color-primary);
+            background: rgba(103, 80, 164, 0.08);
+        }
+
+        /* 输入框标签动画 */
+        .input-field label {
+            position: absolute;
+            left: 16px;
+            top: 18px;
+            color: var(--md-sys-color-on-surface);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.6;
+        }
+
+        input:focus + label,
+        input:not(:placeholder-shown) + label {
+            transform: translateY(-24px) scale(0.75);
+            opacity: 1;
+            color: var(--md-sys-color-primary);
+        }
+
+        /* 按钮动画 */
+        button {
+            width: 100%;
+            height: 48px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            border-radius: 24px;
+            font: 500 14px/20px 'Roboto';
+            letter-spacing: 0.1px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            padding-bottom: 120%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s, opacity 0.5s;
+            opacity: 1;
+        }
+
+        button:active::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        button:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        #result {
+            margin-top: 24px;
+            padding: 16px;
+            background: var(--md-sys-color-primary-container);
+            border-radius: 16px;
+            font: 500 20px/28px 'Roboto';
+            text-align: center;
+            color: var(--md-sys-color-on-surface);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 页脚样式 */
+        footer {
+            margin-top: auto;
+            padding: 24px 0;
+            text-align: center;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .footer-link {
+            color: var(--md-sys-color-primary);
+            text-decoration: none;
+            font: 500 14px/20px 'Roboto';
+            transition: opacity 0.2s ease;
+            position: relative;
+        }
+
+        .footer-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-bg"></div>
+    <div class="blur-overlay"></div>
+
+    <div class="container">
+        <h1>🎲 随机数生成器</h1>
+        <div class="input-group">
+            <div class="input-field">
+                <input type="number" id="minValue" value="1" placeholder=" ">
+                <label for="minValue">最小值</label>
+            </div>
+            <div class="input-field">
+                <input type="number" id="maxValue" value="52" placeholder=" ">
+                <label for="maxValue">最大值</label>
+            </div>
+        </div>
+        <button onclick="generateRandomNumber()">生成随机数</button>
+        <div id="result"></div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+              ShirleyTan丨由DeepSeek协助嵌套Material Design 3 UI并附带一堆臭虫
+            <a href="https://github.com/TanXifei/tanxifei.github.io/blob/master/randomNB.html" 
+               class="footer-link" 
+               target="_blank">查看本页源代码</a>
+            <a href="https://github.com/axxacherry/RandGenPro" 
+               class="footer-link" 
+               target="_blank">Fork from "axxacherry/RandGenPro"</a>
+        </div>
+    </footer>
+
+    <script>
+        function generateRandomNumber() {
+            const min = parseInt(document.getElementById('minValue').value);
+            const max = parseInt(document.getElementById('maxValue').value);
+            const result = document.getElementById('result');
+
+            result.classList.remove('show');
+
+            if (min >= max) {
+                result.textContent = "错误：最小值必须小于最大值";
+                result.style.background = "#FFB4AB";
+                result.classList.add('show');
+                return;
+            }
+
+            setTimeout(() => {
+                const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                result.textContent = `🎉 生成的随机数：${randomNumber}`;
+                result.style.background = "var(--md-sys-color-primary-container)";
+                result.classList.add('show');
+            }, 200);
+        }
+
+        // 模糊逻辑控制
+        const blurOverlay = document.querySelector('.blur-overlay');
+        const inputs = document.querySelectorAll('input');
+
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                blurOverlay.classList.add('active');
+            });
+
+            input.addEventListener('blur', () => {
+                blurOverlay.classList.remove('active');
+            });
+        });
+
+        // 点击遮罩层移除焦点
+        blurOverlay.addEventListener('click', () => {
+            inputs.forEach(input => input.blur());
+        });
+    </script>
+</body>
+</html>
